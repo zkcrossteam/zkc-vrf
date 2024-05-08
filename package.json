@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
+    "@nomicfoundation/edr-linux-x64-gnu": "^0.2.1",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@nomiclabs/hardhat-ethers": "^2.2.2",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "@openzeppelin/contracts": "^5.0.2",
+    "@typechain/ethers-v5": "^10.2.0",
+    "@typechain/hardhat": "^6.1.5",
+    "chai": "^4.3.7",
+    "crypto-js": "^4.2.0",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.13.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "hardhat-waffle": "0.0.1-security",
+    "solidity-coverage": "^0.8.2",
+    "typechain": "^8.1.1",
+    "zkwasm-service-helper": "github:DelphinusLab/zkWasm-service-helper"
+  },
+  "devDependencies": {
+    "ts-generator": "^0.1.1"
+  }
+}
