@@ -48,4 +48,48 @@ contract zkcvrf is zkcvrfIface {
         // Delete seed after callback
         delete smap[seed];
     }
+
+    function bytesToUint(bytes memory bs, uint256 start, uint256 len)
+        internal
+        pure
+        returns (uint256)
+    {
+        require(bs.length >= start + 32, "slicing out of range");
+        uint256 x;
+        assembly {
+            x := mload(add(bs, add(start, 0x20)))
+        }
+        return x >> (32 - len) * 8;
+    }
+
+    function fullfill_random(
+	bytes calldata tx_data,
+        uint256[] calldata proof,
+        uint256[] calldata verify_instance,
+        uint256[] calldata aux,
+        uint256[][] calldata instances
+    ) public {
+
+        uint256 sha_pack = uint256(sha256(tx_data));
+        require(
+            sha_pack ==
+                (instances[0][4] << 192) +
+                    (instances[0][5] << 128) +
+                    (instances[0][6] << 64) +
+                    instances[0][7],
+            "Inconstant: Sha data inconsistant"
+        );
+
+	uint256 seed = bytesToUint(tx_data, 0, 32);
+	uint256 randomNumber = bytesToUint(tx_data, 32, 32);
+        require(smap[seed][0] != address(0), "Seed not found");
+
+        DelphinusVerifier(verifier).verify(proof, verify_instance, aux, instances);
+
+        emit Settle(seed, randomNumber);
+        zkcvrfCallbackIface(smap[seed][0]).handle_random(seed, randomNumber);
+
+        // Delete seed after callback
+        delete smap[seed];
+    }
 }
