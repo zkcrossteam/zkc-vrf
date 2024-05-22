@@ -17,7 +17,7 @@ impl RandomInfo {
         }
     }
     /// change everything to big endian that should fits solidity's format
-    pub fn to_be_bytes(&self) -> [u8; 80] {
+    pub fn to_be_bytes(&self) -> [u8; 64] {
         let mut bytes = vec![];
         for i in 0..4 {
             bytes.append(&mut self.seed[3-i].to_be_bytes().to_vec());
@@ -30,7 +30,7 @@ impl RandomInfo {
 }
 
 /// encode bytes into wasm output
-pub fn output_tx_info(data: &[u8; 80]) {
+pub fn output_tx_info(data: &[u8; 64]) {
     let mut hasher = Sha256::new();
     hasher.update(data);
     let result = hasher.finalize();
