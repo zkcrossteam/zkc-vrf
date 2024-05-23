@@ -19,9 +19,8 @@ main().catch((error) => {
     process.exitCode = 1;
 });
 
-
 async function req_random() {
-    const contract = await ethers.getContractAt("zkcvrf", "0x19cF9C6c1c2F596A3F9f307Ea4fC4BEe39bFb6E6");
+    const contract = await ethers.getContractAt("zkcvrf", "0x0c0a8B404A5930E0F536511cEF8f7722885180e0");
  
     let helper = new ZkWasmServiceHelper("https://rpc.zkwasmhub.com:8090", "", "");
     let log: QueryParams = {
@@ -47,7 +46,13 @@ async function req_random() {
         let instArr = new U8ArrayUtil(instances).toNumber();
 	console.log(instArr);
 
-        const tx  = await contract.settle_random(0x12345, 0x5678, proofArr, verifyInstancesArr, auxArr, [instArr]);
+	const abiCoder = new ethers.utils.AbiCoder();
+	const encodedData = abiCoder.encode(
+        ['uint256', 'uint256'],
+        [0x12345, 0x5678]
+    	);
+
+        const tx  = await contract.fullfill_random(encodedData, proofArr, verifyInstancesArr, auxArr, [instArr]);
         console.log(tx);
         await tx.wait();
     }

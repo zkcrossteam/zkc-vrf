@@ -14,9 +14,9 @@ main().catch((error) => {
 });
 
 async function req_random() {
-    const contract = await ethers.getContractAt("zkcvrf_example", "0x9285E0B12e0415664b4A2049D8440BF6E593bC80");
+    const contract = await ethers.getContractAt("zkcvrf_example", "0xC81e2aEd4619B931f0EFf625c478db3162Dd8B06");
 
-    const tx  = await contract.request_random(0x12345, 0x5678);
+    const tx  = await contract.request_random(0x9123452, 0x5678);
     console.log(tx);
     await tx.wait();
 }
