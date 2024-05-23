@@ -18,11 +18,22 @@ pub fn zkmain() -> i64 {
     
     let mut seed_inputs = vec![];
     // get the seed and hash to a msg for sign
+
+    let mut i = 0;
     for _ in 0..commands_len {
         let command = unsafe { wasm_input(0) };
         hasher.update(command.to_le_bytes());
-        seed_inputs.push(command);
+        if i < 4 {
+            seed_inputs.push(command);
+        }
+        i += 1;
     }
+    if commands_len < 4 {
+        for _ in 0..(4 - commands_len) {
+            seed_inputs.push(0);
+        }
+    }
+
     let msghash = hasher.finalize();
     zkwasm_rust_sdk::dbg!("command hash is {:?}\n", msghash);
 
