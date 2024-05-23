@@ -36,7 +36,7 @@ pub fn output_tx_info(data: &[u8; 64]) {
     let result = hasher.finalize();
     for c in result.chunks_exact(8) {
         zkwasm_rust_sdk::dbg!("c is {:?}", c);
-        unsafe { wasm_output(u64::from_be_bytes(c.try_into().unwrap())) }
+        unsafe { wasm_output(u64::from_le_bytes(c.try_into().unwrap())) }
     }
 }
 
