@@ -73,10 +73,10 @@ contract zkcvrf is zkcvrfIface {
         uint256 sha_pack = uint256(sha256(tx_data));
         require(
             sha_pack ==
-                (instances[0][4] << 192) +
-                    (instances[0][5] << 128) +
-                    (instances[0][6] << 64) +
-                    instances[0][7],
+                (instances[0][8] << 192) +
+                    (instances[0][9] << 128) +
+                    (instances[0][10] << 64) +
+                    instances[0][11],
             "Inconstant: Sha data inconsistant"
         );
 
