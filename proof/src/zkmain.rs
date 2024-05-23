@@ -110,6 +110,13 @@ pub fn zkmain() -> i64 {
         wasm_output(group_u64[3]);
     }
 
+    unsafe {
+        wasm_output(random_u64[0]);
+        wasm_output(random_u64[1]);
+        wasm_output(random_u64[2]);
+        wasm_output(random_u64[3]);
+    }
+
     let deposit = RandomInfo::new(
         [seed_inputs[0], seed_inputs[1], seed_inputs[2], seed_inputs[3]],
         [random_u64[0], random_u64[1], random_u64[2], random_u64[3]]
