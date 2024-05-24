@@ -20,13 +20,13 @@ main().catch((error) => {
 });
 
 async function req_random() {
-    const contract = await ethers.getContractAt("zkcvrf", "0x0c0a8B404A5930E0F536511cEF8f7722885180e0");
+    const contract = await ethers.getContractAt("zkcvrf", "0x85918465274762C6B0b474358d8CaD769b1A1cD4");
  
     let helper = new ZkWasmServiceHelper("https://rpc.zkwasmhub.com:8090", "", "");
     let log: QueryParams = {
-        user_address: "0x5cd293a257ad7d6E37DA47547b4a860665Bbb562",
-        md5: "4ACF8785C72DA630F963700FF60198CC",
-        id: "662ed7b156e94dd72559ce75",
+        user_address: "0xefc304a114398ed8eb2b4caafe7deeaea666e6e5",
+	md5: "7C51079B2672FD027F9F89ECD3DCF30E",
+        id: "664ff380c1aab605af38ce0d",
         tasktype: "Prove",
         taskstatus: "Done",
     }
@@ -42,17 +42,13 @@ async function req_random() {
         let proofArr = new U8ArrayUtil(proof).toNumber();
         let auxArr = new U8ArrayUtil(aux).toNumber();
         let verifyInstancesArr = new U8ArrayUtil(batchInstances).toNumber();
-	console.log(instances);
+	//console.log(instances);
         let instArr = new U8ArrayUtil(instances).toNumber();
 	console.log(instArr);
 
-	const abiCoder = new ethers.utils.AbiCoder();
-	const encodedData = abiCoder.encode(
-        ['uint256', 'uint256'],
-        [0x12345, 0x5678]
-    	);
+	const byteArray: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 95, 123, 34, 63, 149, 165, 43, 176, 237, 165, 7, 208, 208, 76, 136, 219, 239, 220, 216, 189, 0, 144, 135, 235, 24, 56, 191, 52, 206, 191, 143, 26];
 
-        const tx  = await contract.fullfill_random(encodedData, proofArr, verifyInstancesArr, auxArr, [instArr]);
+        const tx  = await contract.fullfill_random(byteArray, proofArr, verifyInstancesArr, auxArr, [instArr]);
         console.log(tx);
         await tx.wait();
     }
