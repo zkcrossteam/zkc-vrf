@@ -27,28 +27,6 @@ contract zkcvrf is zkcvrfIface {
         return [block.timestamp, uint256(keccak256(abi.encodePacked(seed, msg.sender, block.timestamp)))];
     }
 
-    // Verify with seed, randomNumber and proof
-    // If verify succeed, run callback
-    function settle_random(
-        uint256 seed,
-        uint256 randomNumber,
-        uint256[] calldata proof,
-        uint256[] calldata verify_instance,
-        uint256[] calldata aux,
-        uint256[][] calldata instances
-    ) public {
-        require(smap[seed][0] != address(0), "Seed not found");
-
-        DelphinusVerifier(verifier).verify(proof, verify_instance, aux, instances);
-	//Or should we get randomNumber from instances after verify?
-
-        emit Settle(seed, randomNumber);
-        zkcvrfCallbackIface(smap[seed][0]).handle_random(seed, randomNumber);
-
-        // Delete seed after callback
-        delete smap[seed];
-    }
-
     function bytesToUint(bytes memory bs, uint256 start, uint256 len)
         internal
         pure
