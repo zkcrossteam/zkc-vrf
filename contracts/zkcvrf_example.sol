@@ -4,6 +4,7 @@ import "./zkcvrfCallbackIface.sol";
 import "./zkcvrfIface.sol";
 
 contract zkcvrf_example is zkcvrfCallbackIface {
+    event receiveRandom(uint256 seed, uint256 randomNumber);
     zkcvrfIface _vrf;
 
     modifier onlyVrfContract() {
@@ -20,6 +21,7 @@ contract zkcvrf_example is zkcvrfCallbackIface {
     }
 
     function handle_random(uint256 seed, uint256 randomNumber) public onlyVrfContract {
+        emit receiveRandom(seed, randomNumber);
 	//print (seed, randomNumber);
 	//Use randome
     }

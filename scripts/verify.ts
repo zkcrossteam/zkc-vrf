@@ -20,7 +20,7 @@ main().catch((error) => {
 });
 
 async function req_random() {
-    const contract = await ethers.getContractAt("zkcvrf", "0xc5168BF8061F3e616921df335506B186e22E1eFF");
+    const contract = await ethers.getContractAt("zkcvrf", "0x0C46065A600624C23d373f6D40C93FB84c6bEa5E");
  
     let helper = new ZkWasmServiceHelper("https://rpc.zkwasmhub.com:8090", "", "");
     let log: QueryParams = {
