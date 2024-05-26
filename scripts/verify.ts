@@ -20,13 +20,13 @@ main().catch((error) => {
 });
 
 async function req_random() {
-    const contract = await ethers.getContractAt("zkcvrf", "0x0C46065A600624C23d373f6D40C93FB84c6bEa5E");
+    const contract = await ethers.getContractAt("zkcvrf", "0xCe1A3cd005F5B7937c9B6A4dDC514603F90C349D");
  
     let helper = new ZkWasmServiceHelper("https://rpc.zkwasmhub.com:8090", "", "");
     let log: QueryParams = {
         user_address: "0xefc304a114398ed8eb2b4caafe7deeaea666e6e5",
-	md5: "7C51079B2672FD027F9F89ECD3DCF30E",
-        id: "665026f0c1aab605af391eda",
+	md5: "F9A36A5DCE90EA6B1BD6F6A72928D6E4",
+        id: "66528b5ba27375b8e521907f",
         tasktype: "Prove",
         taskstatus: "Done",
     }
@@ -36,7 +36,9 @@ async function req_random() {
         let data0 = tasks.data[0];
         let proof = data0.proof;
         let aux = data0.aux;
-        let batchInstances = data0.batch_instances;
+	// See below for an example of verifying a proof which has been batched with the Auto Submitted Proof service.
+
+        let batchInstances = data0.shadow_instances;
         let instances = data0.instances;
 
         let proofArr = new U8ArrayUtil(proof).toNumber();
@@ -46,9 +48,7 @@ async function req_random() {
         let instArr = new U8ArrayUtil(instances).toNumber();
 	console.log(instArr);
 
-	//const byteArray: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 95, 123, 34, 63, 149, 165, 43, 176, 237, 165, 7, 208, 208, 76, 136, 219, 239, 220, 216, 189, 0, 144, 135, 235, 24, 56, 191, 52, 206, 191, 143, 26];
-
-	const byteArray: number[] = [0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 1, 209, 241, 25, 155, 201, 46, 112, 232, 90, 238, 27, 69, 181, 135, 146, 88, 129, 242, 83, 162, 208, 159, 74, 178, 139, 197, 174, 1, 154, 143, 186, 245];
+	const byteArray: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 52, 86, 120, 146, 98, 52, 254, 59, 129, 204, 175, 59, 217, 116, 151, 121, 211, 195, 97, 243, 0, 129, 251, 243, 84, 10, 155, 57, 128, 81, 18, 205, 62, 13, 11, 153, 127, 135]
 
         const tx  = await contract.fullfill_random(byteArray, proofArr, verifyInstancesArr, auxArr, [instArr]);
         console.log(tx);
