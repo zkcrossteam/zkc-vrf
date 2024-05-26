@@ -3,12 +3,13 @@ pragma solidity ^0.8.24;
 import "./VerifierIface.sol";
 import "./zkcvrfCallbackIface.sol";
 import "./zkcvrfIface.sol";
+//import "hardhat/console.sol";
 
 contract zkcvrf is zkcvrfIface {
     mapping(uint256 => address[2]) public smap;
     event Request(uint256 seed, uint256 group_hash);
     event Settle(uint256 seed, uint256 randomNumber);
-    address verifier = 0x56Ac4A0981cD36e07Fb6A3F6cde5FdBFAf89EA02; //sepolia
+    address verifier = 0xCec4ECd9B4DCc874E711c9AAd9Be8074B210e3A3; //sepolia
 
     constructor() {}
 
