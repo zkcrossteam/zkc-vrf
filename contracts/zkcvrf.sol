@@ -5,9 +5,10 @@ import "./zkcvrfCallbackIface.sol";
 import "./zkcvrfIface.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 //import "hardhat/console.sol";
 
-contract zkcvrf is zkcvrfIface {
+contract zkcvrf is zkcvrfIface, Ownable {
     using SafeERC20 for IERC20;
     event Request(uint256 seed, uint256 group_hash);
     event Settle(uint256 seed, uint256 randomNumber);
@@ -25,14 +26,18 @@ contract zkcvrf is zkcvrfIface {
     struct GroupInfo {
         uint256 stakeBalance;
         address creatorAddr;
+	//tbd: add liveness;
 	uint256[] pending_seeds;
     }
     mapping(uint256 => GroupInfo) public groups;
     uint256[] public groupKeys; // Array to store keys of groups mapping
-    uint256 constant GROUP_MIN_STAKE_AMOUNT = 100 ether;
-    uint256 constant GROUP_MIN_AMOUNT = 20 ether;
+    uint256 group_min_stake_amount = 100 ether;
+    uint256 group_min_amount = 20 ether;
+    uint256 slash_ratio = 2;
 
-    constructor() {}
+    constructor(address initialOwner) Ownable(initialOwner) {
+	treasury = msg.sender;
+    }
 
     // Mapping a seed to a callback contract's address and
     // generate random number with the keccak256 hash algorithm
@@ -42,7 +47,7 @@ contract zkcvrf is zkcvrfIface {
 
         smap[seed] = RequestInfo({callback:callback,groupPk:group_hash,start_block:block.number});
 	//add to group
-	require(groups[group_hash].stakeBalance >= GROUP_MIN_AMOUNT, "group stake balance is not enough");
+	require(groups[group_hash].stakeBalance >= group_min_amount, "group stake balance is not enough");
 	groups[group_hash].pending_seeds.push(seed);
 
         emit Request(seed, group_hash);
@@ -63,6 +68,22 @@ contract zkcvrf is zkcvrfIface {
             x := mload(add(bs, add(start, 0x20)))
         }
         return x >> (32 - len) * 8;
+    }
+
+    function setVerifier(address vaddr) public onlyOwner {
+        verifier = vaddr;
+    }
+
+    function setGroupMinStakeAmount(uint256 amount) public onlyOwner {
+	group_min_stake_amount = amount;
+    }
+
+    function setGroupMinAmount(uint256 amount) public onlyOwner {
+	group_min_amount = amount;
+    }
+
+    function setSlashRatio(uint256 ratio) public onlyOwner {
+        slash_ratio = ratio;
     }
 
     function fullfill_random(
@@ -108,7 +129,7 @@ contract zkcvrf is zkcvrfIface {
     }
 
     function registerGroup(uint256 pk, uint256 balance) external {
-        require(balance >= GROUP_MIN_STAKE_AMOUNT, "Insufficient balance");
+        require(balance >= group_min_stake_amount, "Insufficient balance");
 	require(groups[pk].stakeBalance == 0, "Group pk already exists.");
 
         groups[pk] = GroupInfo({
@@ -176,13 +197,13 @@ contract zkcvrf is zkcvrfIface {
 			RequestInfo memory currentRequest = smap[seed];
 			require(currentRequest.groupPk == groupKeys[i],	"groupPk mismatch");
 
-			if (currentBlock - currentRequest.start_block > 10) {
-                            uint256 amount = (currentGroup.stakeBalance * 2) / 100;
+			if (currentBlock - currentRequest.start_block > 20) {
+                            uint256 amount = (currentGroup.stakeBalance * slash_ratio * 2) / 100;
                             IERC20(stakeToken).safeTransfer(treasury, amount);
                             emit slashEvent(seed, currentRequest.groupPk, amount, currentRequest.start_block);
 			}
- 		  	if (currentBlock - currentRequest.start_block > 20) {
-                            uint256 amount = (currentGroup.stakeBalance * 2) / 100;
+ 		  	if (currentBlock - currentRequest.start_block > 10) {
+                            uint256 amount = (currentGroup.stakeBalance * slash_ratio) / 100;
                             IERC20(stakeToken).safeTransfer(treasury, amount);
                             emit slashEvent(seed, currentRequest.groupPk, amount, currentRequest.start_block);
 			}

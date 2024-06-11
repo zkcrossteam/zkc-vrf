@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import * as constants from "./const.ts";
 const { ethers } = require("hardhat");
 const BN = require('bn.js');
 
@@ -15,7 +16,7 @@ main().catch((error) => {
 
 async function setup() {
     const Proxy = await hre.ethers.getContractFactory("zkcvrf");
-    const proxy = await Proxy.deploy(); //sepolia
+    const proxy = await Proxy.deploy(constants.adminAddr); //sepolia
     await proxy.deployed();
     console.log("zkcvrf address: ", proxy.address);
 
