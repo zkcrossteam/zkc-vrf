@@ -2,6 +2,6 @@ npm install
 
 npx hardhat run scripts/setup.ts --network sepolia
 
-zkcvrf address:  0xCe1A3cd005F5B7937c9B6A4dDC514603F90C349D
-zkcvrf_example address:  0x71A4DbB7148b3ebE018f12b267650b674D3BB550
+zkcvrf address:  0xC309059a40C41EB6a500Aa96a6D38a058225567b
+zkcvrf_example address:  0x6FA3E7b92F1Ddaf592604a82681D56176DC1826f
 

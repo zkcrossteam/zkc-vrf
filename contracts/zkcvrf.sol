@@ -3,23 +3,30 @@ pragma solidity ^0.8.24;
 import "./VerifierIface.sol";
 import "./zkcvrfCallbackIface.sol";
 import "./zkcvrfIface.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 //import "hardhat/console.sol";
 
-contract zkcvrf is zkcvrfIface {
-    mapping(uint256 => address[2]) public smap;
+contract zkcvrf is zkcvrfIface, Ownable {
     event Request(uint256 seed, uint256 group_hash);
     event Settle(uint256 seed, uint256 randomNumber);
-    address verifier = 0xCec4ECd9B4DCc874E711c9AAd9Be8074B210e3A3; //sepolia
+    address verifier = 0x2cd0a24aCAC1ee774443A28BD28C46E2D8e3a091; //del-sepolia
+    struct RequestInfo {
+	address callback;
+	uint256 groupPk;
+        uint256 start_block;
+    }
+    mapping(uint256 => RequestInfo) public smap; //mapping seed to requestInfo
 
-    constructor() {}
+    constructor(address initialOwner) Ownable(initialOwner) {
+    }
 
     // Mapping a seed to a callback contract's address and
     // generate random number with the keccak256 hash algorithm
     // mapping seed to verify contract's address
     function create_random(uint256 seed, address callback, uint256 group_hash) public returns (uint256[2] memory){
-        require(smap[seed][0] == address(0), "Seed already exists");
+        require(smap[seed].callback == address(0), "Seed already exists");
 
-        smap[seed] = [callback, address(0)];
+	smap[seed] = RequestInfo({callback:callback,groupPk:group_hash,start_block:block.number});
 
         emit Request(seed, group_hash);
 
@@ -61,14 +68,21 @@ contract zkcvrf is zkcvrfIface {
 
 	uint256 seed = bytesToUint(tx_data, 0, 32);
 	uint256 randomNumber = bytesToUint(tx_data, 32, 32);
-        require(smap[seed][0] != address(0), "Seed not found");
+
+
+        require(smap[seed].callback != address(0), "Seed not found");
+        require(smap[seed].groupPk == (instances[0][4] << 192) + (instances[0][5] << 128) + (instances[0][6] << 64) + (instances[0][7]), "Grouphash mismatch");
 
         DelphinusVerifier(verifier).verify(proof, verify_instance, aux, instances);
 
         emit Settle(seed, randomNumber);
-        zkcvrfCallbackIface(smap[seed][0]).handle_random(seed, randomNumber);
+        zkcvrfCallbackIface(smap[seed].callback).handle_random(seed, randomNumber);
 
         // Delete seed after callback
         delete smap[seed];
+    }
+
+    function setVerifier(address vaddr) public onlyOwner {
+        verifier = vaddr;
     }
 }

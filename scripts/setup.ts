@@ -15,7 +15,7 @@ main().catch((error) => {
 
 async function setup() {
     const Proxy = await hre.ethers.getContractFactory("zkcvrf");
-    const proxy = await Proxy.deploy(); //sepolia
+    const proxy = await Proxy.deploy("0xEFc304a114398ed8Eb2B4CaAFe7dEeAeA666e6E5"); //sepolia
     await proxy.deployed();
     console.log("zkcvrf address: ", proxy.address);
 
