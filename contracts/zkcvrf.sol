@@ -4,7 +4,7 @@ import "./VerifierIface.sol";
 import "./zkcvrfCallbackIface.sol";
 import "./zkcvrfIface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-//import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 contract zkcvrf is zkcvrfIface, Ownable {
     event Request(uint256 seed, uint256 group_hash);
@@ -71,7 +71,7 @@ contract zkcvrf is zkcvrfIface, Ownable {
 
 
         require(smap[seed].callback != address(0), "Seed not found");
-        require(smap[seed].groupPk == (instances[0][0] << 192) + (instances[0][1] << 128) + (instances[2][6] << 64) + (instances[3][7]), "Grouphash mismatch");
+        require(smap[seed].groupPk == (instances[0][0] << 192) + (instances[0][1] << 128) + (instances[0][2] << 64) + (instances[0][3]), "Grouphash mismatch");
 
         DelphinusVerifier(verifier).verify(proof, verify_instance, aux, instances);
 
