@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 import "./ZKVRFConsumerBase.sol";
 import "./ZKVRFCoordinatorInterface.sol";
 
-contract zkcvrf_example is ZKVRFConsumerBase {
+contract zkvrf_example is ZKVRFConsumerBase {
     event receiveRandom(uint256 seed, uint256 randomNumber);
     ZKVRFCoordinatorInterface _vrf;
 

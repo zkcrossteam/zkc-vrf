@@ -19,10 +19,10 @@ async function setup() {
     await proxy.deployed();
     console.log("zkcvrf address: ", proxy.address);
 
-    const Example = await hre.ethers.getContractFactory("zkcvrf_example");
+    const Example = await hre.ethers.getContractFactory("zkvrf_example");
     const example = await Example.deploy(proxy.address); //sepolia
     await example.deployed();
-    console.log("zkcvrf_example address: ", example.address);
+    console.log("zkvrf_example address: ", example.address);
 
     console.log("setup completed!");
     return;
