@@ -2,5 +2,5 @@
 pragma solidity ^0.8.24;
 
 interface ZKVRFCoordinatorInterface {
-    function requestRandomWords(uint256 seed, address callback, uint256 group_hash) external returns (uint256[2] memory);
+    function requestRandomWords(uint256 orig_seed, uint256 operate_group_hash, address callback) external returns (uint256);
 }

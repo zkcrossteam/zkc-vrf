@@ -12,15 +12,15 @@ abstract contract ZKVRFConsumerBase {
     vrfCoordinator = _vrfCoordinator;
   }
 
-  function fulfillRandomWords(uint256 seed, uint256 randomNumber) internal virtual;
+  function fulfillRandomWords(uint256 requestId, uint256 seed, uint256 randomNumber) internal virtual;
 
   // rawFulfillRandomness is called by VRFCoordinator when it receives a valid VRF
   // proof. rawFulfillRandomness then calls fulfillRandomness, after validating
   // the origin of the call
-  function rawFulfillRandomWords(uint256 seed, uint256 randomNumber) external {
+  function rawFulfillRandomWords(uint256 requestId, uint256 seed, uint256 randomNumber) external {
     if (msg.sender != vrfCoordinator) {
       revert OnlyCoordinatorCanFulfill(msg.sender, vrfCoordinator);
     }
-    fulfillRandomWords(seed, randomNumber);
+    fulfillRandomWords(requestId, seed, randomNumber);
   }
 }
