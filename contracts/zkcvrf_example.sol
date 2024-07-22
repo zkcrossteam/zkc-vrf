@@ -1,29 +1,23 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
-import "./zkcvrfCallbackIface.sol";
-import "./zkcvrfIface.sol";
+import "./ZKVRFConsumerBase.sol";
+import "./ZKVRFCoordinatorInterface.sol";
 
-contract zkcvrf_example is zkcvrfCallbackIface {
+contract zkcvrf_example is ZKVRFConsumerBase {
     event receiveRandom(uint256 seed, uint256 randomNumber);
-    zkcvrfIface _vrf;
+    ZKVRFCoordinatorInterface _vrf;
 
-    modifier onlyVrfContract() {
-        require(msg.sender == address(_vrf), "Unauthorized access");
-        _;
-    }
-
-    constructor(address _zkcvrf) {
-	_vrf = zkcvrfIface(_zkcvrf);
+    constructor(address _zkvrfCoordinator) ZKVRFConsumerBase(_zkvrfCoordinator) {
+	_vrf = ZKVRFCoordinatorInterface(_zkvrfCoordinator);
     }
 
     function request_random(uint256 seed, uint256 group_hash) public {
-	    _vrf.create_random(seed, address(this), group_hash);
+	    _vrf.requestRandomWords(seed, address(this), group_hash);
     }
 
-    function handle_random(uint256 seed, uint256 randomNumber) public onlyVrfContract {
+    function fulfillRandomWords(uint256 seed, uint256 randomNumber) internal override{
         emit receiveRandom(seed, randomNumber);
 	//print (seed, randomNumber);
 	//Use randome
     }
 }
- 
