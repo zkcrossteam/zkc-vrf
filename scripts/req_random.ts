@@ -14,10 +14,10 @@ main().catch((error) => {
 });
 
 async function req_random() {
-   const contract = await ethers.getContractAt("zkcvrf_example", "0x0C05BaCD83E16C74C3aC219BAe5309D0Bda10dAE");
+   const contract = await ethers.getContractAt("zkvrf_example", "0x0601B5f1e2067fD304A9D27C4bF95d22c5044bfe");
 
    const arg1 = ethers.BigNumber.from("5154095575442842");
-  const arg2 = ethers.BigNumber.from("38608566209366443851658898712947698042272167288516776474471539454638392565090");
+  const arg2 = ethers.BigNumber.from("109846781823873033916277473186951440652193030882978868386869196044474030503582");
 
     const tx  = await contract.request_random(arg1,arg2);
     console.log(tx);
