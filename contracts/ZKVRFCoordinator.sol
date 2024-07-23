@@ -29,7 +29,7 @@ contract ZKVRFCoordinator is ZKVRFCoordinatorInterface, Ownable, ReentrancyGuard
         uint256 nonce = requestNonce++;
 	uint256 seed;
 
-        seed = uint256(keccak256(abi.encode(orig_seed, nonce)));
+        seed = uint256(keccak256(abi.encode(keccak256(abi.encode(orig_seed)), nonce)));
 	smap[requestId] = RequestInfo({
 		orig_seed: orig_seed,
 		nonce:nonce,
@@ -76,7 +76,7 @@ contract ZKVRFCoordinator is ZKVRFCoordinatorInterface, Ownable, ReentrancyGuard
 	uint256 randomNumber = bytesToUint(tx_data, 32, 32);
 
         require(smap[requestId].callback != address(0), "Request not found");
-        require(seed == uint256(keccak256(abi.encode(smap[requestId].orig_seed, smap[requestId].nonce))), "Seed not mismatch");
+        require(seed == uint256(keccak256(abi.encode(keccak256(abi.encode(smap[requestId].orig_seed)),smap[requestId].nonce))), "Seed not mismatch");
         require(smap[requestId].operate_group_hash == (instances[0][0] << 192) + (instances[0][1] << 128) + (instances[0][2] << 64) + (instances[0][3]), "Grouphash mismatch");
 
         DelphinusVerifier(verifier).verify(proof, verify_instance, aux, instances);
