@@ -4,7 +4,7 @@ import "./ZKVRFConsumerBase.sol";
 import "./ZKVRFCoordinatorInterface.sol";
 
 contract zkvrf_example is ZKVRFConsumerBase {
-    event receiveRandom(uint256 seed, uint256 randomNumber);
+    event receiveRandom(uint256 _requestId, uint256 seed, uint256 randomNumber);
     ZKVRFCoordinatorInterface _vrf;
     uint256 requestId;
 
@@ -17,8 +17,8 @@ contract zkvrf_example is ZKVRFConsumerBase {
     }
 
     function fulfillRandomWords(uint256 _requestId, uint256 seed, uint256 randomNumber) internal override{
-	require (_requestId == requestId, "request id mismatch");
-	emit receiveRandom(seed, randomNumber);
+	//require (_requestId == requestId, "request id mismatch");
+	emit receiveRandom(_requestId, seed, randomNumber);
 	//print (seed, randomNumber);
 	//Use randome
     }
